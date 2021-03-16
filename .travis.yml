@@ -25,15 +25,22 @@ jdk:
   - openjdk15
   - openjdk-ea
   
+jobs:
+   exclude:
+      - arch: amd64
+        jdk: openjdk-ea  
+  
 before_install:
-        - mkdir -p /opt/maven
-        - curl https://downloads.apache.org/maven/maven-3/3.6.3/binaries/apache-maven-3.6.3-bin.tar.gz|tar -xz --strip 1 -C /opt/maven
-        - export MAVEN_HOME=/opt/maven
-        - export PATH=${MAVEN_HOME}/bin:${PATH}   
+      #the default maven version is not  supporting , hence installing maven 3.6.3
+  - |
+    if [[ "$TRAVIS_CPU_ARCH" = "ppc64le" ]]; then
+        mkdir -p /opt/maven
+        curl https://downloads.apache.org/maven/maven-3/3.6.3/binaries/apache-maven-3.6.3-bin.tar.gz|tar -xz --strip 1 -C /opt/maven
+        export MAVEN_HOME=/opt/maven
+        export PATH=${MAVEN_HOME}/bin:${PATH}
+    fi  
 
-matrix:
-  allow_failures:
-    - jdk: openjdk-ea
+
 
 after_success:
   - mvn -V clean cobertura:cobertura coveralls:report --no-transfer-progress
