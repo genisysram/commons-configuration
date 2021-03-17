@@ -25,10 +25,9 @@ jdk:
   - openjdk15
   - openjdk-ea
   
-jobs:
-   exclude:
-      - arch: amd64
-        jdk: openjdk-ea  
+matrix:
+  allow_failures:
+    - jdk: openjdk-ea
   
 before_install:
       #the default maven version is not  supporting , hence installing maven 3.6.3
